@@ -48,10 +48,18 @@ namespace TrainerRipper
 						{
 						}
 					}
+					if(!map.ContainsKey("id"))
+					{
+						continue;
+					}
 					if (!map.ContainsKey("trainingcost"))
 					{
 						// let it be free :P
 						map["trainingcost"] = "0";
+					}
+					if (!map.ContainsKey("skill"))
+					{
+						map["skill"] = "0";
 					}
 					if (map.ContainsKey("name"))
 					{
