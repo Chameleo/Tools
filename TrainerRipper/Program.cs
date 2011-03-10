@@ -20,7 +20,16 @@ namespace TrainerRipper
 			}
 			string npcId = args[0];
 			string url = "http://www.wowhead.com/npc=" + npcId;
-			List<string> content = ReadPage(url);
+			List<string> content;
+			try
+			{
+				content = ReadPage(url);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Couldn't read the page: " + e.Message);
+				return;
+			}
 			Regex r = new Regex(@"new Listview\(\{template: 'spell'.*data: \[(.+)\]\}\);");
 			StreamWriter outp = File.CreateText("npc_trainer_"+npcId+".sql");
 			foreach (string line in content)
@@ -48,7 +57,7 @@ namespace TrainerRipper
 						{
 						}
 					}
-					if(!map.ContainsKey("id"))
+					if (!map.ContainsKey("id") || !map.ContainsKey("level"))
 					{
 						continue;
 					}
