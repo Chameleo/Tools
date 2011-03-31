@@ -16,11 +16,16 @@ namespace VendorRipper
 		{
 			if (args.Length < 1)
 			{
-				Console.WriteLine("requires npc id as an argument");
+				Console.WriteLine("requires npcId as a parameter");
 				Console.ReadKey();
 			}
 			string npcId = args[0];
-			string url = "http://www.wowhead.com/npc=" + npcId;
+            string url;
+            if (args.Length > 1)
+                url = args[1];
+            else
+                url = "http://www.wowhead.com/npc=" + npcId;
+
 			List<string> content;
 			try
 			{
@@ -31,7 +36,8 @@ namespace VendorRipper
 				Console.WriteLine("Couldn't read the page: " + e.Message);
 				return;
 			}
-			Regex r = new Regex(@"new Listview\(\{template: 'item', id: 'sells'.*data: (\[.+\])\}\);");
+			//Regex r = new Regex(@"new Listview\(\{template: 'item', id: 'sells'.*data: (\[.+\])\}\);");
+            Regex r = new Regex(@"new Listview\(\{template: 'item'.*data: (\[.+\])\}\);");
 			StreamWriter outp = File.CreateText("npc_vendor_" + npcId + ".sql");
 			foreach (string line in content)
 			{
@@ -50,7 +56,9 @@ namespace VendorRipper
 					try
 					{
 						int id = (int)itemInfo["id"];
-						int maxcount = (int)itemInfo["avail"];
+                        int maxcount = 0;
+                        if(itemInfo.ContainsKey("avail"))
+						    maxcount = (int)itemInfo["avail"];
 						if (maxcount < 0)
 							maxcount = 0;
 						// todo, figure out extended cost from honor cost
