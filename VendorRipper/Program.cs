@@ -18,6 +18,7 @@ namespace VendorRipper
 			{
 				Console.WriteLine("requires npcId as a parameter");
 				Console.ReadKey();
+                return;
 			}
 			string npcId = args[0];
             string url;
@@ -61,9 +62,12 @@ namespace VendorRipper
 						    maxcount = (int)itemInfo["avail"];
 						if (maxcount < 0)
 							maxcount = 0;
+                        string name = "";
+                        if (itemInfo.ContainsKey("name"))
+                            name = (string)itemInfo["name"];
 						// todo, figure out extended cost from honor cost
-						outp.WriteLine("replace into `npc_vendor`(`entry`,`slot`,`item`,`maxcount`,`incrtime`,`ExtendedCost`) values ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}');",
-								npcId, 0, id, maxcount, 0, 0);
+						outp.WriteLine("replace into `npc_vendor`(`entry`,`slot`,`item`,`maxcount`,`incrtime`,`ExtendedCost`) values ( '{0}', '{1}', '{2}', '{3}', '{4}', '{5}'); -- {6}",
+								npcId, 0, id, maxcount, 0, 0, name);
 					}
 					catch (Exception e)
 					{
